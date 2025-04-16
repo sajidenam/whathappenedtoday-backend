@@ -1,0 +1,16 @@
+{
+  "name": "whathappenedtoday-backend",
+  "version": "1.0.0",
+  "description": "Automated backend updater for What Happened Today",
+  "main": "generateData.js",
+  "scripts": {
+    "start": "node generateData.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dayjs": "^1.11.9"
+  },
+  "keywords": [],
+  "author": "Sajid",
+  "license": "ISC"
+}
