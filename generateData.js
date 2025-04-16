@@ -1,4 +1,3 @@
-// Backend script here (already in canvas, not repeating for brevity)
 // Backend script to fetch daily updates and push to GitHub
 const fs = require('fs');
 const axios = require('axios');
