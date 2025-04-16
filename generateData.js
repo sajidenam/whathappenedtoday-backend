@@ -104,11 +104,16 @@ app.get('/', (req, res) => res.send('WHT backend is live.')); // optional homepa
 
 app.get('/run', async (req, res) => {
   try {
+    console.log('🟡 Starting build...');
     await buildDataJson();
+    console.log('✅ Data JSON built');
+
     await pushToGitHub();
+    console.log('✅ Pushed to GitHub');
+
     res.send('✅ Data updated and pushed to GitHub.');
   } catch (err) {
-    console.error(err);
+    console.error('🔥 Error during /run:', err.message || err);
     res.status(500).send('❌ Failed to update.');
   }
 });
