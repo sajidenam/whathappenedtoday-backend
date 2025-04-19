@@ -68,8 +68,8 @@ async function fetchExtras() {
 }
 
 async function buildDataJson() {
-  const [news, sports, entertainment, weather, markets, extras] = await Promise.all([
-    fetchNews(), fetchSports(), fetchMovies(), fetchWeather(), fetchMarkets(), fetchExtras()
+  const [news, sports, entertainment, weather, extras] = await Promise.all([
+    fetchNews(), fetchSports(), fetchMovies(), fetchWeather(), fetchExtras()
   ]);
 
   const data = {
@@ -78,8 +78,7 @@ async function buildDataJson() {
     sports,
     entertainment,
     weather,
-    markets,
-    quote: extras.quote,
+        quote: extras.quote,
     fact: extras.fact,
     history: extras.history,
     trends: {
