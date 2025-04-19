@@ -123,7 +123,7 @@ async function buildDataJson() {
     sports,
     entertainment,
     weather,
-        quote: extras.quote,
+    quote: extras.quote,
     fact: extras.fact,
     history: extras.history,
     trends: {
