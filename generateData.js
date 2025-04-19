@@ -55,16 +55,39 @@ async function fetchMarkets() {
 }
 
 async function fetchExtras() {
-  const [quote, fact, history] = await Promise.all([
-    axios.get('https://api.quotable.io/random'),
-    axios.get('https://uselessfacts.jsph.pl/random.json?language=en'),
-    axios.get('https://history.muffinlabs.com/date')
-  ]);
-  return {
-    quote: { title: 'Quote of the Day', content: `${quote.data.content} — ${quote.data.author}` },
-    fact: { title: 'Quick Fact', content: fact.data.text },
-    history: { title: 'Today in History', content: history.data.data.Events[0].text }
-  };
+  try {
+    const quote = await axios.get('https://api.quotable.io/random');
+    return {
+      quote: {
+        title: 'Quote of the Day',
+        content: `${quote.data.content} — ${quote.data.author}`
+      },
+      fact: {
+        title: 'Quick Fact',
+        content: 'Could not fetch fact today.'
+      },
+      history: {
+        title: 'Today in History',
+        content: 'Could not fetch historical event today.'
+      }
+    };
+  } catch (err) {
+    console.error('⚠️ Error in fetchExtras:', err.message);
+    return {
+      quote: {
+        title: 'Quote of the Day',
+        content: 'Could not fetch quote today.'
+      },
+      fact: {
+        title: 'Quick Fact',
+        content: 'Could not fetch fact today.'
+      },
+      history: {
+        title: 'Today in History',
+        content: 'Could not fetch historical event today.'
+      }
+    };
+  }
 }
 
 async function buildDataJson() {
