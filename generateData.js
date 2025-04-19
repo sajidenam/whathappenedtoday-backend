@@ -92,28 +92,63 @@ async function buildDataJson() {
 }
 
 async function pushToGitHub() {
-  execSync('git config --global user.email "sajid@example.com"');
-  execSync('git config --global user.name "sajid-bot"');
-  execSync('git pull');
-  execSync('git add data.json');
-  execSync('git commit -m "Auto update: ' + dayjs().format('YYYY-MM-DD HH:mm') + '" || echo "No changes"');
-  execSync('git push');
+  const owner = process.env.GITHUB_REPO_OWNER;
+  const repo = process.env.GITHUB_REPO_NAME;
+  const path = 'data.json';
+  const branch = process.env.GITHUB_BRANCH;
+  const token = GITHUB_TOKEN;
+
+  const githubApi = axios.create({
+    baseURL: 'https://api.github.com',
+    headers: {
+      Authorization: `token ${token}`,
+      'Content-Type': 'application/json',
+      'User-Agent': 'WhatHappenedToday-AutoUpdater'
+    }
+  });
+
+  const content = fs.readFileSync('data.json', 'utf-8');
+  const base64Content = Buffer.from(content).toString('base64');
+
+  try {
+    console.log('🔍 Checking if file exists...');
+    const { data: existing } = await githubApi.get(`/repos/${owner}/${repo}/contents/${path}?ref=${branch}`);
+    const sha = existing.sha;
+
+    console.log('📝 Updating file via GitHub API...');
+    await githubApi.put(`/repos/${owner}/${repo}/contents/${path}`, {
+      message: `Auto update: ${dayjs().format('YYYY-MM-DD HH:mm')}`,
+      content: base64Content,
+      branch,
+      sha
+    });
+    console.log('✅ GitHub file update complete');
+
+  } catch (err) {
+    if (err.response && err.response.status === 404) {
+      console.log('📄 File not found — creating new data.json');
+      await githubApi.put(`/repos/${owner}/${repo}/contents/${path}`, {
+        message: `Initial data.json creation: ${dayjs().format('YYYY-MM-DD HH:mm')}`,
+        content: base64Content,
+        branch
+      });
+      console.log('✅ data.json created via GitHub API');
+    } else {
+      console.error('❌ GitHub API push failed:', err.message || err);
+      throw err;
+    }
+  }
 }
 
 app.get('/', (req, res) => res.send('WHT backend is live.')); // optional homepage
 
 app.get('/run', async (req, res) => {
   try {
-    console.log('🟡 Starting build...');
     await buildDataJson();
-    console.log('✅ Data JSON built');
-
     await pushToGitHub();
-    console.log('✅ Pushed to GitHub');
-
     res.send('✅ Data updated and pushed to GitHub.');
   } catch (err) {
-    console.error('🔥 Error during /run:', err.message || err);
+    console.error(err);
     res.status(500).send('❌ Failed to update.');
   }
 });
