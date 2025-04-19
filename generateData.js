@@ -23,7 +23,6 @@ async function fetchNews() {
       console.warn('⚠️ No news articles returned');
     }
     return { title: 'Top News', items: res.data.articles.map(a => a.title) };
-}
   } catch (err) {
     console.error('❌ Error fetching news:', err.response?.data || err.message);
     return { title: 'Top News', items: ['Could not fetch news today.'] };
@@ -39,7 +38,6 @@ async function fetchSports() {
       console.warn('⚠️ No sports articles returned');
     }
     return { title: 'Sports Updates', items: res.data.articles.map(a => a.title) };
-}
   } catch (err) {
     console.error('❌ Error fetching sports:', err.response?.data || err.message);
     return { title: 'Sports Updates', items: ['Could not fetch sports updates today.'] };
@@ -123,7 +121,7 @@ async function buildDataJson() {
     sports,
     entertainment,
     weather,
-    quote: extras.quote,
+        quote: extras.quote,
     fact: extras.fact,
     history: extras.history,
     trends: {
