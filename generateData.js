@@ -17,7 +17,7 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 async function fetchNews() {
   try {
-    const res = await axios.get(`https://newsapi.org/v2/top-headlines?country=in&pageSize=5&apiKey=${NEWS_API_KEY}`);
+    const res = await axios.get(`https://newsapi.org/v2/everything?q=india OR world&language=en&pageSize=5&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`);
     console.log('📰 NewsAPI response status:', res.status);
     if (!res.data.articles || res.data.articles.length === 0) {
       console.warn('⚠️ No news articles returned');
@@ -27,17 +27,27 @@ async function fetchNews() {
     console.error('❌ Error fetching news:', err.response?.data || err.message);
     return { title: 'Top News', items: ['Could not fetch news today.'] };
   }
+}
+  } catch (err) {
+    console.error('❌ Error fetching news:', err.response?.data || err.message);
+    return { title: 'Top News', items: ['Could not fetch news today.'] };
+  }
 
 }
 
 async function fetchSports() {
   try {
-    const res = await axios.get(`https://newsapi.org/v2/top-headlines?country=in&category=sports&pageSize=5&apiKey=${NEWS_API_KEY}`);
+    const res = await axios.get(`https://newsapi.org/v2/everything?q=sports&language=en&pageSize=5&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`);
     console.log('⚽ SportsAPI response status:', res.status);
     if (!res.data.articles || res.data.articles.length === 0) {
       console.warn('⚠️ No sports articles returned');
     }
     return { title: 'Sports Updates', items: res.data.articles.map(a => a.title) };
+  } catch (err) {
+    console.error('❌ Error fetching sports:', err.response?.data || err.message);
+    return { title: 'Sports Updates', items: ['Could not fetch sports updates today.'] };
+  }
+}
   } catch (err) {
     console.error('❌ Error fetching sports:', err.response?.data || err.message);
     return { title: 'Sports Updates', items: ['Could not fetch sports updates today.'] };
