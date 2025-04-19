@@ -27,8 +27,7 @@ async function fetchNews() {
     console.error('❌ Error fetching news:', err.response?.data || err.message);
     return { title: 'Top News', items: ['Could not fetch news today.'] };
   }
-}`);
-  return { title: 'Top News', items: res.data.articles.map(a => a.title) };
+
 }
 
 async function fetchSports() {
@@ -43,8 +42,7 @@ async function fetchSports() {
     console.error('❌ Error fetching sports:', err.response?.data || err.message);
     return { title: 'Sports Updates', items: ['Could not fetch sports updates today.'] };
   }
-}`);
-  return { title: 'Sports Updates', items: res.data.articles.map(a => a.title) };
+
 }
 
 async function fetchWeather() {
